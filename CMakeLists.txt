@@ -23,8 +23,8 @@ set(SOURCES
         src/naive_matmul.cuh
         src/matmul_helpers.cu
         src/matmul_helpers.cuh
-        src/cpu_matmul.cpp
-        src/cpu_matmul.h)
+        src/cpu_matmul.cu
+        src/cpu_matmul.cuh)
 
 # Create the executable
 add_executable(matmul ${SOURCES})

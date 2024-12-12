@@ -4,18 +4,18 @@
 
 #include "matmul_helpers.cuh"
 
-#include "cpu_matmul.h"
+#include "cpu_matmul.cuh"
 
 // helper to index into the single ptr array for the 2D matrix
 // we are not using pointer-to-pointer approach as it is slower: https://stackoverflow.com/a/53978538
-__device__ __host__ inline int idx_in_flattened(int row, int col, int width) {
+__device__ __host__ int idx_in_flattened(int row, int col, int width) {
     return row * width + col;
 }
 
 void alloc_matrices(
     float **mat_A, float **mat_B, float **mat_C,
-    int m, int n, int k, float
-    **d_mat_A, float **d_mat_B, float **d_mat_C) {
+    float** d_mat_A, float **d_mat_B, float **d_mat_C,
+    int m, int n, int k) {
 
     // allocate for host matrices on the cpu
     *mat_A = new float[m * k];
@@ -31,7 +31,7 @@ void alloc_matrices(
 
 bool verify_against_cpu_matmul(
     const float *h_mat_A, const float *h_mat_B, const float *h_mat_C_gpu,
-    const float *h_mat_C_cpu, int M, int N, int K
+    int M, int N, int K
 ) {
     // we allocate memory for CPU result
     float *cpu_result = new float[M * N];

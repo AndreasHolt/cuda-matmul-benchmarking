@@ -2,9 +2,9 @@
 // Created by andwh on 12/12/2024.
 //
 
-#include "cpu_matmul.h"
+#include "cpu_matmul.cuh"
 
-#include "naive_matmul.cuh"
+#include "matmul_helpers.cuh"
 
 void cpu_matmul(
     const float *mat_A, const float *mat_B, float *mat_C,
@@ -21,3 +21,4 @@ void cpu_matmul(
         }
     }
 }
+
