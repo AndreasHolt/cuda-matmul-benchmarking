@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.18)
-project(KNN CUDA CXX)
+project(matmul CUDA CXX)
 
 # Enable CUDA language support
 enable_language(CUDA)
@@ -17,24 +17,31 @@ set(CMAKE_CUDA_ARCHITECTURES 75)
 find_package(CUDAToolkit REQUIRED)
 
 # Set the source files
-set(SOURCES main.cu)
+set(SOURCES
+        ./src/main.cu
+        src/naive_matmul.cu
+        src/naive_matmul.cuh
+        src/matmul_helpers.cu
+        src/matmul_helpers.cuh
+        src/cpu_matmul.cpp
+        src/cpu_matmul.h)
 
 # Create the executable
-add_executable(KNN ${SOURCES})
+add_executable(matmul ${SOURCES})
 
 # Include CUDA directories
-target_include_directories(KNN PRIVATE
+target_include_directories(matmul PRIVATE
         ${CMAKE_CUDA_TOOLKIT_INCLUDE_DIRECTORIES}
         ${CUDAToolkit_INCLUDE_DIRS}
 )
 
 # Set CUDA specific properties
-set_target_properties(KNN PROPERTIES
+set_target_properties(matmul PROPERTIES
         CUDA_SEPARABLE_COMPILATION ON
 )
 
 # Link CUDA runtime and other necessary libraries
-target_link_libraries(KNN PRIVATE
+target_link_libraries(matmul PRIVATE
         CUDA::cudart
         CUDA::cuda_driver
 )
