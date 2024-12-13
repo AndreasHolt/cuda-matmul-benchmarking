@@ -4,6 +4,7 @@
 
 #ifndef MATMUL_HELPERS_CUH
 #define MATMUL_HELPERS_CUH
+#include <iostream>
 
 __device__ __host__ int idx_in_flattened(int row, int col, int width);
 
@@ -18,5 +19,6 @@ bool verify_against_cpu_matmul(
     int M, int N, int K
 );
 
+void print_matrix(float* matrix, int rows, int cols);
 
 #endif //MATMUL_HELPERS_CUH

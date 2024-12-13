@@ -51,5 +51,12 @@ bool verify_against_cpu_matmul(
     return true;
 }
 
-
+void print_matrix(float* matrix, int rows, int cols) {
+  for (int i = 0; i < rows; i++) {
+    for (int j = 0; j < cols; j++) {
+      std::cout << matrix[i * cols + j] << " ";
+    }
+    std::cout << "\n";
+  }
+}
 

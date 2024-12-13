@@ -2,73 +2,55 @@
 #include "./matmul_helpers.cuh"
 #include "naive_matmul.cuh"
 
+void test_3x2_matmul() {
+    int M = 3; // rows of A
+    int N = 2; // cols of B
+    int K = 2; // cols of A and rows of B
 
+    float *A, *B, *C;
+    float *d_A, *d_B, *d_C;
 
-int main() {
-  int M = 3;  // rows of A
-  int N = 2;  // cols of B
-  int K = 2;  // cols of A and rows of B
+    alloc_matrices(&A, &B, &C, &d_A, &d_B, &d_C, M, N, K);
 
-  // Host matrices (flat arrays)
-  float *A, *B, *C;
-  // Device matrices
-  float *d_A, *d_B, *d_C;
+    float A_data[] = {
+        1.0f, 2.0f,
+        4.0f, 5.0f,
+        6.0f, 3.0f
+    };
 
-  alloc_matrices(&A, &B, &C, &d_A, &d_B, &d_C, M, N, K);
+    float B_data[] = {
+        1.0f, 2.0f,
+        3.0f, 4.0f
+    };
 
-  // manual initialization of matrix A
-  A[0] = 1.0f; A[1] = 2.0f;  // row 1
-  A[2] = 4.0f; A[3] = 5.0f;  // row 2
-  A[4] = 6.0f; A[5] = 3.0f;  // row 3
+    memcpy(A, A_data, M * K * sizeof(float));
+    memcpy(B, B_data, K * N * sizeof(float));
 
-  // and matrix B
-  B[0] = 1.0f; B[1] = 2.0f; // row 1
-  B[2] = 3.0f; B[3] = 4.0f; // row 2
+    std::cout << "matrix A (3x2):\n";
+    print_matrix(A, M, K);
 
-  // Print input matrices
-  std::cout << "matrix A (3x2):\n";
-  for (int i = 0; i < M; i++) {
-    for (int j = 0; j < K; j++) {
-      std::cout << A[i * K + j] << " ";
+    std::cout << "\nmatrix B (2x2):\n";
+    print_matrix(B, K, N);
+
+    cudaMemcpy(d_A, A, M * K * sizeof(float), cudaMemcpyHostToDevice);
+    cudaMemcpy(d_B, B, K * N * sizeof(float), cudaMemcpyHostToDevice);
+
+    naive_matmul(d_A, d_B, d_C, M, N, K);
+
+    cudaMemcpy(C, d_C, M * N * sizeof(float), cudaMemcpyDeviceToHost);
+
+    std::cout << "\nResult Matrix C (3x2):\n";
+    print_matrix(C, M, N);
+
+    int is_correct = verify_against_cpu_matmul(A, B, C, M, N, K);
+    if (is_correct) {
+        std::cout << "Correct matmul kernel" << std::endl;
+    } else {
+        std::cout << "Incorrect matmul kernel" << std::endl;
     }
-    std::cout << "\n";
-  }
-
-  std::cout << "\nmatrix B (2x2):\n";
-  for (int i = 0; i < K; i++) {
-    for (int j = 0; j < N; j++) {
-      std::cout << B[i * N + j] << " ";
-    }
-    std::cout << "\n";
-  }
-
-  cudaMemcpy(d_A, A, M * K * sizeof(float), cudaMemcpyHostToDevice);
-  cudaMemcpy(d_B, B, K * N * sizeof(float), cudaMemcpyHostToDevice);
-
-
-  naive_matmul(d_A, d_B, d_C, M, N, K);
-
-  cudaMemcpy(C, d_C, M * N * sizeof(float), cudaMemcpyDeviceToHost);
-
-  // Print result matrix
-  std::cout << "\nResult Matrix C (3x2):\n";
-  for (int i = 0; i < M; i++) {
-    for (int j = 0; j < N; j++) {
-      std::cout << C[i * N + j] << " ";
-    }
-    std::cout << "\n";
-  }
-
-  int is_correct = verify_against_cpu_matmul(A, B, C, M, N, K);
-  if(is_correct) {
-    std::cout << "Correct matmul kernel" << std::endl;
-
-  } else {
-    std::cout << "Incorrect matmul kernel" << std::endl;
-  }
-
-
-
-  return 0;
 }
 
+int main() {
+    test_3x2_matmul();
+    return 0;
+}
