@@ -21,4 +21,9 @@ bool verify_against_cpu_matmul(
 
 void print_matrix(float* matrix, int rows, int cols);
 
+void initialize_matrices(float* mat_A, float* mat_B, int M, int N, int K);
+
+void free_matrices(float* mat_A, float* mat_B, float* mat_C,
+                  float* d_mat_A, float* d_mat_B, float* d_mat_C);
+
 #endif //MATMUL_HELPERS_CUH

@@ -60,3 +60,31 @@ void print_matrix(float* matrix, int rows, int cols) {
   }
 }
 
+void initialize_matrices(float* mat_A, float* mat_B, int M, int N, int K) {
+    // matrix A
+    for (int i = 0; i < M; i++) {
+        for (int j = 0; j < K; j++) {
+            mat_A[i * K + j] = static_cast<float>(rand()) / RAND_MAX;
+        }
+    }
+
+    // matrix B
+    for (int i = 0; i < K; i++) {
+        for (int j = 0; j < N; j++) {
+            mat_B[i * N + j] = static_cast<float>(rand()) / RAND_MAX;
+        }
+    }
+}
+
+void free_matrices(float* mat_A, float* mat_B, float* mat_C,
+                  float* d_mat_A, float* d_mat_B, float* d_mat_C) {
+    // Free host memory
+    delete[] mat_A;
+    delete[] mat_B;
+    delete[] mat_C;
+
+    // Free device memory
+    cudaFree(d_mat_A);
+    cudaFree(d_mat_B);
+    cudaFree(d_mat_C);
+}

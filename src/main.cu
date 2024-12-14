@@ -1,6 +1,7 @@
 #include <iostream>
 #include "./matmul_helpers.cuh"
 #include "naive_matmul.cuh"
+#include "benchmark.cuh"
 
 void test_3x2_matmul() {
     int M = 3; // rows of A
@@ -51,6 +52,12 @@ void test_3x2_matmul() {
 }
 
 int main() {
-    test_3x2_matmul();
+    auto result = benchmark_matmul(3, 2, 2);
+
+    std::cout << "Time taken: " << result.time_ms << " ms" << std::endl;
+    std::cout << "GFLOPS: " << result.gflops << std::endl;
+    std::cout << "Correct: " << result.correct << std::endl;
+
+    // test_3x2_matmul();
     return 0;
 }
