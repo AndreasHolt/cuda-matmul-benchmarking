@@ -17,7 +17,7 @@ enum class MatMulType {
     // for further parts I'll add tiled matmul, tiled shared matmul etc.
 };
 
-BenchmarkResult benchmark_matmul(int M, int N, int K, int num_iterations = 100);
+BenchmarkResult benchmark_matmul(MatMulType type, int M, int N, int K, int num_iterations = 100);
 
 
 

@@ -14,7 +14,7 @@ __global__ void naive_matmul_kernel(
   int row = blockIdx.y * blockDim.y + threadIdx.y;
   int col = blockIdx.x * blockDim.x + threadIdx.x;
 
-  if (row < M && col < K) {
+  if (row < M && col < N) {
     float cell_sum = 0.0f;
 
     for(int k = 0; k < K; k++) {
