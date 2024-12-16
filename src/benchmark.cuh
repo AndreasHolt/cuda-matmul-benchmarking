@@ -14,6 +14,7 @@ struct BenchmarkResult {
 enum class MatMulType {
     SEQUENTIAL_CPU,
     NAIVE_GPU,
+    TILED_GPU,
     // for further parts I'll add tiled matmul, tiled shared matmul etc.
 };
 

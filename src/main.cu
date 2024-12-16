@@ -52,18 +52,25 @@ void test_3x2_matmul() {
 }
 
 int main() {
-    auto naive_gpu_result = benchmark_matmul(MatMulType::NAIVE_GPU, 1024, 1024, 1024);
-    auto sequential_cpu_result = benchmark_matmul(MatMulType::SEQUENTIAL_CPU, 1024, 1024, 1024);
+    int dim = 256;
+    auto naive_gpu_result = benchmark_matmul(MatMulType::NAIVE_GPU, dim, dim, dim);
+    auto tiled_gpu_result = benchmark_matmul(MatMulType::TILED_GPU, dim, dim, dim);
+    auto sequential_cpu_result = benchmark_matmul(MatMulType::SEQUENTIAL_CPU, dim, dim, dim);
 
     std::cout << "=== RESULTS FOR GPU NAIVE MATMUL ===" << std::endl;
-    std::cout << "GPU Time taken (ms): " << naive_gpu_result.time_ms << std::endl;
+    std::cout << "Time taken (ms): " << naive_gpu_result.time_ms << std::endl;
     std::cout << "GFLOPS: " << naive_gpu_result.gflops << std::endl;
     std::cout << "Correct: " << naive_gpu_result.correct << std::endl;
 
     std::cout << "\n\n";
 
+    std::cout << "=== RESULTS FOR GPU TILED MATMUL ===" << std::endl;
+    std::cout << "Time taken (ms): " << tiled_gpu_result.time_ms << std::endl;
+    std::cout << "GFLOPS: " << tiled_gpu_result.gflops << std::endl;
+    std::cout << "Correct: " << tiled_gpu_result.correct << std::endl;
+
     std::cout << "=== RESULTS FOR CPU SEQUENTIAL MATMUL ===" << std::endl;
-    std::cout << "GPU Time taken (ms): " << sequential_cpu_result.time_ms << std::endl;
+    std::cout << "Time taken (ms): " << sequential_cpu_result.time_ms << std::endl;
     std::cout << "GFLOPS: " << sequential_cpu_result.gflops << std::endl;
     std::cout << "Correct: " << sequential_cpu_result.correct << std::endl;
 

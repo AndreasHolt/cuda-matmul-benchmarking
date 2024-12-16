@@ -26,7 +26,9 @@ set(SOURCES
         src/cpu_matmul.cu
         src/cpu_matmul.cuh
         src/benchmark.cu
-        src/benchmark.cuh)
+        src/benchmark.cuh
+        src/tiled_matmul.cu
+        src/tiled_matmul.cuh)
 
 # Create the executable
 add_executable(matmul ${SOURCES})

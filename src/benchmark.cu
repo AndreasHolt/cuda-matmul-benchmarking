@@ -8,6 +8,7 @@
 #include "cpu_matmul.cuh"
 #include "matmul_helpers.cuh"
 #include "naive_matmul.cuh"
+#include "tiled_matmul.cuh"
 
 
 BenchmarkResult benchmark_matmul(MatMulType type, int M, int N, int K, int num_iterations) {
@@ -48,6 +49,8 @@ BenchmarkResult benchmark_matmul(MatMulType type, int M, int N, int K, int num_i
         switch(type) {
             case MatMulType::NAIVE_GPU: // for now i've only implemented naive matmul
                 naive_matmul(d_A, d_B, d_C, M, N, K);
+            case MatMulType::TILED_GPU:
+                tiled_matmul(d_A, d_B, d_C, M, N, K);
             break;
         }
 
@@ -57,7 +60,11 @@ BenchmarkResult benchmark_matmul(MatMulType type, int M, int N, int K, int num_i
                 case MatMulType::NAIVE_GPU:
                     naive_matmul(d_A, d_B, d_C, M, N, K);
                     break;
+                case MatMulType::TILED_GPU:
+                    tiled_matmul(d_A, d_B, d_C, M, N, K);
+                    break;
             }
+
         }
         cudaEventRecord(stop);
         cudaEventSynchronize(stop);
