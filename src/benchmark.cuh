@@ -18,7 +18,11 @@ enum class MatMulType {
     // for further parts I'll add tiled matmul, tiled shared matmul etc.
 };
 
-BenchmarkResult benchmark_matmul(MatMulType type, int M, int N, int K, int num_iterations = 100);
+const char* get_MatMulType_name(MatMulType type);
+
+
+
+BenchmarkResult benchmark_matmul(MatMulType type, int M, int N, int K, bool verify_corretness, int num_iterations = 100);
 
 
 

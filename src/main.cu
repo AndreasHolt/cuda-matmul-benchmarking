@@ -43,7 +43,7 @@ void test_3x2_matmul() {
     std::cout << "\nResult Matrix C (3x2):\n";
     print_matrix(C, M, N);
 
-    int is_correct = verify_against_cpu_matmul(A, B, C, M, N, K);
+    int is_correct = verify_against_cpu_matmul(MatMulType::NAIVE_GPU, A, B, C, M, N, K);
     if (is_correct) {
         std::cout << "Correct matmul kernel" << std::endl;
     } else {
@@ -52,27 +52,37 @@ void test_3x2_matmul() {
 }
 
 int main() {
-    int dim = 256;
-    auto naive_gpu_result = benchmark_matmul(MatMulType::NAIVE_GPU, dim, dim, dim);
-    auto tiled_gpu_result = benchmark_matmul(MatMulType::TILED_GPU, dim, dim, dim);
-    auto sequential_cpu_result = benchmark_matmul(MatMulType::SEQUENTIAL_CPU, dim, dim, dim);
+    int dims[] = {
+        32,
+        256,
+        1024,
+        2048
+    };
+    bool verify_correctness = false; // since we are testing for correctness against CPU, this can take very long on large matrices
+    MatMulType types[] = { // Specify all the types that should be benchmarked
+        MatMulType::NAIVE_GPU,
+        MatMulType::TILED_GPU,
+        MatMulType::SEQUENTIAL_CPU
+    };;
 
-    std::cout << "=== RESULTS FOR GPU NAIVE MATMUL ===" << std::endl;
-    std::cout << "Time taken (ms): " << naive_gpu_result.time_ms << std::endl;
-    std::cout << "GFLOPS: " << naive_gpu_result.gflops << std::endl;
-    std::cout << "Correct: " << naive_gpu_result.correct << std::endl;
+    for (const int& dim : dims) {
+        std::cout << "-----------" << std::endl;
+        std::cout << "BENCHMARKING ON: " << dim << "×" << dim << "(A) " << "@" << dim << "×" << dim << " (B) " << std::endl;
 
-    std::cout << "\n\n";
+        for (const auto& type : types) {
 
-    std::cout << "=== RESULTS FOR GPU TILED MATMUL ===" << std::endl;
-    std::cout << "Time taken (ms): " << tiled_gpu_result.time_ms << std::endl;
-    std::cout << "GFLOPS: " << tiled_gpu_result.gflops << std::endl;
-    std::cout << "Correct: " << tiled_gpu_result.correct << std::endl;
+            auto naive_gpu_result = benchmark_matmul(type, dim, dim, dim, verify_correctness);
+            std::cout << "RESULTS FOR " << get_MatMulType_name(type) << ":" << std::endl;
+            std::cout << "   - Time taken (ms): " << naive_gpu_result.time_ms << std::endl;
+            std::cout << "   - GFLOPS: " << naive_gpu_result.gflops << std::endl;
+            if (verify_correctness) {
+                std::cout << "   - Correct: " << naive_gpu_result.correct << std::endl;
+            }
 
-    std::cout << "=== RESULTS FOR CPU SEQUENTIAL MATMUL ===" << std::endl;
-    std::cout << "Time taken (ms): " << sequential_cpu_result.time_ms << std::endl;
-    std::cout << "GFLOPS: " << sequential_cpu_result.gflops << std::endl;
-    std::cout << "Correct: " << sequential_cpu_result.correct << std::endl;
+        }
+        std::cout << "-----------" << std::endl;
+        std::cout << "" << std::endl;
+    }
 
 
     // test_3x2_matmul();

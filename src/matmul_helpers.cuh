@@ -5,6 +5,7 @@
 #ifndef MATMUL_HELPERS_CUH
 #define MATMUL_HELPERS_CUH
 #include <iostream>
+#include "benchmark.cuh"
 
 __device__ __host__ int idx_in_flattened(int row, int col, int width);
 
@@ -15,6 +16,7 @@ void alloc_matrices(
     );
 
 bool verify_against_cpu_matmul(
+    MatMulType type,
     const float *h_mat_A, const float *h_mat_B, const float *h_mat_C_gpu,
     int M, int N, int K
 );

@@ -10,8 +10,21 @@
 #include "naive_matmul.cuh"
 #include "tiled_matmul.cuh"
 
+const char* get_MatMulType_name(MatMulType type) {
+    switch(type) {
+        case MatMulType::SEQUENTIAL_CPU:
+            return "SEQUENTIAL_CPU";
+        case MatMulType::NAIVE_GPU:
+            return "NAIVE_GPU";
+        case MatMulType::TILED_GPU:
+            return "TILED_GPU";
+        default:
+            return "UNKNOWN";
+    }
+}
 
-BenchmarkResult benchmark_matmul(MatMulType type, int M, int N, int K, int num_iterations) {
+
+BenchmarkResult benchmark_matmul(MatMulType type, int M, int N, int K, bool verify_correctness, int num_iterations) {
     float *A, *B, *C;
     float *d_A, *d_B, *d_C;
     cudaEvent_t start, stop;
@@ -35,6 +48,7 @@ BenchmarkResult benchmark_matmul(MatMulType type, int M, int N, int K, int num_i
     if (type == MatMulType::SEQUENTIAL_CPU) {
         // as it's on cpu just use chrono to measure
         auto start = std::chrono::high_resolution_clock::now();
+
         for(int i = 0; i < num_iterations; i++) {
             cpu_matmul(A, B, C, M, N, K);
         }
@@ -81,9 +95,9 @@ BenchmarkResult benchmark_matmul(MatMulType type, int M, int N, int K, int num_i
 
     // i decided to just verify correctness for the gpu versions, as the cpu version is trivially correct
     bool is_correct = true; // default to true since cpu will not enter below
-    if (type != MatMulType::SEQUENTIAL_CPU) {
+    if (verify_correctness && type != MatMulType::SEQUENTIAL_CPU) {
         cudaMemcpy(C, d_C, M * N * sizeof(float), cudaMemcpyDeviceToHost);
-        is_correct = verify_against_cpu_matmul(A, B, C, M, N, K);
+        is_correct = verify_against_cpu_matmul(type, A, B, C, M, N, K);
     }
 
     // for good measure, cleanup
@@ -99,3 +113,5 @@ BenchmarkResult benchmark_matmul(MatMulType type, int M, int N, int K, int num_i
 
     return {milliseconds, static_cast<float>(gflops), is_correct};
 }
+
+
