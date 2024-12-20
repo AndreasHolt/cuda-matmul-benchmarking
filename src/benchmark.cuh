@@ -22,7 +22,7 @@ const char* get_MatMulType_name(MatMulType type);
 
 
 
-BenchmarkResult benchmark_matmul(MatMulType type, int M, int N, int K, bool verify_corretness, int num_iterations = 100);
+BenchmarkResult benchmark_matmul(MatMulType type, int M, int N, int K, bool verify_correctness = false, int num_iterations = 100);
 
 
 

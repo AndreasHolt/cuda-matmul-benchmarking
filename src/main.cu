@@ -3,6 +3,40 @@
 #include "naive_matmul.cuh"
 #include "benchmark.cuh"
 
+void run_benchmarks() {
+    int dims[] = {
+        32,
+        256,
+        1024,
+        2048
+    };
+    bool verify_correctness = false; // since we are testing for correctness against CPU, this can take very long on large matrices
+    MatMulType types[] = { // Specify all the types that should be benchmarked
+        MatMulType::NAIVE_GPU,
+        MatMulType::TILED_GPU,
+        MatMulType::SEQUENTIAL_CPU
+    };;
+
+    for (const int& dim : dims) {
+        std::cout << "-----------" << std::endl;
+        std::cout << "BENCHMARKING ON: " << dim << "×" << dim << "(A) " << "@" << dim << "×" << dim << " (B) " << std::endl;
+
+        for (const auto& type : types) {
+
+            auto naive_gpu_result = benchmark_matmul(type, dim, dim, dim, verify_correctness);
+            std::cout << "RESULTS FOR " << get_MatMulType_name(type) << ":" << std::endl;
+            std::cout << "   - Time taken (ms): " << naive_gpu_result.time_ms << std::endl;
+            std::cout << "   - GFLOPS: " << naive_gpu_result.gflops << std::endl;
+            if (verify_correctness) {
+                std::cout << "   - Correct: " << naive_gpu_result.correct << std::endl;
+            }
+
+        }
+        std::cout << "-----------" << std::endl;
+        std::cout << "" << std::endl;
+    }
+    }
+
 void test_3x2_matmul() {
     int M = 3; // rows of A
     int N = 2; // cols of B
@@ -51,40 +85,39 @@ void test_3x2_matmul() {
     }
 }
 
-int main() {
-    int dims[] = {
-        32,
-        256,
-        1024,
-        2048
-    };
-    bool verify_correctness = false; // since we are testing for correctness against CPU, this can take very long on large matrices
-    MatMulType types[] = { // Specify all the types that should be benchmarked
-        MatMulType::NAIVE_GPU,
-        MatMulType::TILED_GPU,
-        MatMulType::SEQUENTIAL_CPU
-    };;
+void run_profile(MatMulType type, int dim) {
+    for (int i = 0; i < 3; i++) {  // we run the profile 3 times
+        auto result = benchmark_matmul(type, dim, dim, dim);
+        std::cout << "Run " << i + 1 << " - Time: " << result.time_ms << "ms, GFLOPS: " << result.gflops << std::endl;
+    }
+}
 
-    for (const int& dim : dims) {
-        std::cout << "-----------" << std::endl;
-        std::cout << "BENCHMARKING ON: " << dim << "×" << dim << "(A) " << "@" << dim << "×" << dim << " (B) " << std::endl;
 
-        for (const auto& type : types) {
-
-            auto naive_gpu_result = benchmark_matmul(type, dim, dim, dim, verify_correctness);
-            std::cout << "RESULTS FOR " << get_MatMulType_name(type) << ":" << std::endl;
-            std::cout << "   - Time taken (ms): " << naive_gpu_result.time_ms << std::endl;
-            std::cout << "   - GFLOPS: " << naive_gpu_result.gflops << std::endl;
-            if (verify_correctness) {
-                std::cout << "   - Correct: " << naive_gpu_result.correct << std::endl;
-            }
-
-        }
-        std::cout << "-----------" << std::endl;
-        std::cout << "" << std::endl;
+int main(int argc, char*argv[]) {
+    if (argc == 1) {
+        // if we have no arguments, we just run the entire suite that we also did benchmarking with
+        run_benchmarks();
+        return 0;
     }
 
+    if (argc == 4 && std::string(argv[1]) == "profile") {
+        MatMulType type;
+        if (std::string(argv[2]) == "naive_gpu") {
+            type = MatMulType::NAIVE_GPU;
+        } else if (std::string(argv[2]) == "tiled_gpu") {
+            type = MatMulType::TILED_GPU;
+        }
 
-    // test_3x2_matmul();
-    return 0;
+        int dim = std::atoi(argv[3]);
+        run_profile(type, dim);
+        return 0;
+    }
+
+    std::cout << "Usage:" << std::endl;
+    std::cout << "  ./matmul                    - Run full benchmark suite" << std::endl;
+    std::cout << "  ./matmul profile <type> <dim> - Profile specific implementation." << std::endl;
+    std::cout << "      <type>: naive_gpu, tiled_gpu" << std::endl;
+    std::cout << "      <dim>: any integer"<< std::endl;
+
+    return 1;
 }
