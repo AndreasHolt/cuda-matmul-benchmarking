@@ -10,19 +10,22 @@ void run_benchmarks() {
         1024,
         2048
     };
-    bool verify_correctness = false; // since we are testing for correctness against CPU, this can take very long on large matrices
-    MatMulType types[] = { // Specify all the types that should be benchmarked
+    bool verify_correctness = false;
+    // since we are testing for correctness against CPU, this can take very long on large matrices
+    MatMulType types[] = {
+        // Specify all the types that should be benchmarked
         MatMulType::NAIVE_GPU,
+        MatMulType::TILED_COALESCED_GPU,
         MatMulType::TILED_GPU,
         MatMulType::SEQUENTIAL_CPU
     };;
 
-    for (const int& dim : dims) {
+    for (const int &dim: dims) {
         std::cout << "-----------" << std::endl;
-        std::cout << "BENCHMARKING ON: " << dim << "×" << dim << "(A) " << "@" << dim << "×" << dim << " (B) " << std::endl;
+        std::cout << "BENCHMARKING ON: " << dim << "×" << dim << "(A) " << "@" << dim << "×" << dim << " (B) " <<
+                std::endl;
 
-        for (const auto& type : types) {
-
+        for (const auto &type: types) {
             auto naive_gpu_result = benchmark_matmul(type, dim, dim, dim, verify_correctness);
             std::cout << "RESULTS FOR " << get_MatMulType_name(type) << ":" << std::endl;
             std::cout << "   - Time taken (ms): " << naive_gpu_result.time_ms << std::endl;
@@ -30,12 +33,11 @@ void run_benchmarks() {
             if (verify_correctness) {
                 std::cout << "   - Correct: " << naive_gpu_result.correct << std::endl;
             }
-
         }
         std::cout << "-----------" << std::endl;
         std::cout << "" << std::endl;
     }
-    }
+}
 
 void test_3x2_matmul() {
     int M = 3; // rows of A
@@ -86,14 +88,15 @@ void test_3x2_matmul() {
 }
 
 void run_profile(MatMulType type, int dim) {
-    for (int i = 0; i < 3; i++) {  // we run the profile 3 times
+    for (int i = 0; i < 3; i++) {
+        // we run the profile 3 times
         auto result = benchmark_matmul(type, dim, dim, dim);
         std::cout << "Run " << i + 1 << " - Time: " << result.time_ms << "ms, GFLOPS: " << result.gflops << std::endl;
     }
 }
 
 
-int main(int argc, char*argv[]) {
+int main(int argc, char *argv[]) {
     if (argc == 1) {
         // if we have no arguments, we just run the entire suite that we also did benchmarking with
         run_benchmarks();
@@ -106,6 +109,8 @@ int main(int argc, char*argv[]) {
             type = MatMulType::NAIVE_GPU;
         } else if (std::string(argv[2]) == "tiled_gpu") {
             type = MatMulType::TILED_GPU;
+        } else if (std::string(argv[2]) == "tiled_coalesced_gpu") {
+            type = MatMulType::TILED_COALESCED_GPU;
         }
 
         int dim = std::atoi(argv[3]);
@@ -117,7 +122,7 @@ int main(int argc, char*argv[]) {
     std::cout << "  ./matmul                    - Run full benchmark suite" << std::endl;
     std::cout << "  ./matmul profile <type> <dim> - Profile specific implementation." << std::endl;
     std::cout << "      <type>: naive_gpu, tiled_gpu" << std::endl;
-    std::cout << "      <dim>: any integer"<< std::endl;
+    std::cout << "      <dim>: any integer" << std::endl;
 
     return 1;
 }

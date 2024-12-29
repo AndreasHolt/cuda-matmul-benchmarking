@@ -8,6 +8,7 @@
 #include "cpu_matmul.cuh"
 #include "matmul_helpers.cuh"
 #include "naive_matmul.cuh"
+#include "tiled_coalesced_matmul.cuh"
 #include "tiled_matmul.cuh"
 
 const char* get_MatMulType_name(MatMulType type) {
@@ -18,6 +19,8 @@ const char* get_MatMulType_name(MatMulType type) {
             return "NAIVE_GPU";
         case MatMulType::TILED_GPU:
             return "TILED_GPU";
+        case MatMulType::TILED_COALESCED_GPU:
+            return "TILED_COALESCED_GPU";
         default:
             return "UNKNOWN";
     }
@@ -65,6 +68,8 @@ BenchmarkResult benchmark_matmul(MatMulType type, int M, int N, int K, bool veri
                 naive_matmul(d_A, d_B, d_C, M, N, K);
             case MatMulType::TILED_GPU:
                 tiled_matmul(d_A, d_B, d_C, M, N, K);
+            case MatMulType::TILED_COALESCED_GPU:
+                tiled_coalesced_matmul(d_A, d_B, d_C, M, N, K);
             break;
         }
 
@@ -76,6 +81,9 @@ BenchmarkResult benchmark_matmul(MatMulType type, int M, int N, int K, bool veri
                     break;
                 case MatMulType::TILED_GPU:
                     tiled_matmul(d_A, d_B, d_C, M, N, K);
+                    break;
+                case MatMulType::TILED_COALESCED_GPU:
+                    tiled_coalesced_matmul(d_A, d_B, d_C, M, N, K);
                     break;
             }
 
