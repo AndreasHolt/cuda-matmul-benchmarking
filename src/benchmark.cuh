@@ -15,7 +15,7 @@ enum class MatMulType {
     SEQUENTIAL_CPU,
     NAIVE_GPU,
     TILED_GPU,
-    // for further parts I'll add tiled matmul, tiled shared matmul etc.
+    TILED_COALESCED_GPU,
 };
 
 const char* get_MatMulType_name(MatMulType type);
