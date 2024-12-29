@@ -34,7 +34,7 @@ This runs benchmarks for all implementations across matrix sizes: 32×32, 256×2
 ```bash
 ./matmul profile <type> <dim>
 ```
-- `<type>`: Implementation type (`naive_gpu` or `tiled_gpu`)
+- `<type>`: Implementation type (`naive_gpu`, `tiled_gpu`, `tiled_coalesced_gpu`)
 - `<dim>`: Matrix dimension (creates dim×dim matrices)
 
 Example:
@@ -47,6 +47,7 @@ For detailed GPU metrics:
 ```bash
 ncu --set full -o naive_2048_full.ncu-rep ./matmul profile naive_gpu 2048
 ncu --set full -o tiled_2048_full.ncu-rep ./matmul profile tiled_gpu 2048
+ncu --set full -o tiled_coalesced_2048_full.ncu-rep ./matmul profile tiled_coalesced_gpu 2048
 ```
 
 ## Implementation Details
