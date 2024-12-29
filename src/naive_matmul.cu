@@ -18,10 +18,10 @@ __global__ void naive_matmul_kernel(
     float cell_sum = 0.0f;
 
     for(int k = 0; k < K; k++) {
-      cell_sum += mat_A[idx_in_flattened(row, k, K)] * mat_B[idx_in_flattened(k, col, N)];
+      cell_sum += mat_A[idx(row, k, K)] * mat_B[idx(k, col, N)];
     }
 
-    mat_C[idx_in_flattened(row, col, N)] = cell_sum;
+    mat_C[idx(row, col, N)] = cell_sum;
   }
 }
 
@@ -30,7 +30,7 @@ void naive_matmul(
   int M, int N, int K
   )
 {
-  dim3 block_size(16, 16); // choose 16x16 as it fits with the warp size (32)
+  dim3 block_size(16, 16);
   dim3 grid_size(
     (N + block_size.x - 1) / block_size.x, // trick for ceil division. ensure matrix N is covered by the grid of blocks
     (M + block_size.y - 1) / block_size.y

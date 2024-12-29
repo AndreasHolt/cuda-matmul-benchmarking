@@ -7,7 +7,7 @@
 #include <iostream>
 #include "benchmark.cuh"
 
-__device__ __host__ int idx_in_flattened(int row, int col, int width);
+__device__ __host__ int idx(int row, int col, int width);
 
 void alloc_matrices(
     float** mat_A, float** mat_B, float** mat_C, // Host matrices

@@ -15,9 +15,9 @@ void cpu_matmul(
         for (int j = 0; j < N; j++) {
             float sum = 0.0f;
             for (int k = 0; k < K; k++) {
-                sum += mat_A[idx_in_flattened(i, k, K)] * mat_B[idx_in_flattened(k, j, N)];
+                sum += mat_A[idx(i, k, K)] * mat_B[idx(k, j, N)];
             }
-            mat_C[idx_in_flattened(i, j, N)] = sum;
+            mat_C[idx(i, j, N)] = sum;
         }
     }
 }

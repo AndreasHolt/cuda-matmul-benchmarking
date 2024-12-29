@@ -14,6 +14,7 @@ struct BenchmarkResult {
 enum class MatMulType {
     SEQUENTIAL_CPU,
     NAIVE_GPU,
+    COALESCED_GPU,
     TILED_GPU,
     TILED_COALESCED_GPU,
 };

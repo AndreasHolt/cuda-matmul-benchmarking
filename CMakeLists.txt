@@ -30,7 +30,9 @@ set(SOURCES
         src/tiled_matmul.cu
         src/tiled_matmul.cuh
         src/tiled_coalesced_matmul.cu
-        src/tiled_coalesced_matmul.cuh)
+        src/tiled_coalesced_matmul.cuh
+        src/coalesced_matmul.cu
+        src/coalesced_matmul.cuh)
 
 # Create the executable
 add_executable(matmul ${SOURCES})

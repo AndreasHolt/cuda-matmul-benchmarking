@@ -24,7 +24,7 @@ __global__ void tiled_coalesced_matmul_kernel(
         if (row < M && (tile * TILE_SIZE + tx) < K) {
             int a_row = row;
             int a_col = tile * TILE_SIZE + tx;
-            shared_A[ty][tx] = mat_A[idx_in_flattened(a_row, a_col, K)];
+            shared_A[ty][tx] = mat_A[idx(a_row, a_col, K)];
         } else {
             shared_A[ty][tx] = 0.0f;
         }
@@ -33,7 +33,7 @@ __global__ void tiled_coalesced_matmul_kernel(
             int b_row = tile * TILE_SIZE + ty;
             int b_col = col;
             // we swap tx and ty. Each thread in the warp no longer accesses elements spaced by N
-            shared_B_transposed[tx][ty] = mat_B[idx_in_flattened(b_row, b_col, N)];
+            shared_B_transposed[tx][ty] = mat_B[idx(b_row, b_col, N)];
         } else {
             shared_B_transposed[tx][ty] = 0.0f;
         }
@@ -50,7 +50,7 @@ __global__ void tiled_coalesced_matmul_kernel(
 
     // write result
     if (row < M && col < N) {
-        mat_C[idx_in_flattened(row, col, N)] = sum;
+        mat_C[idx(row, col, N)] = sum;
     }
 }
 

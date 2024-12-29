@@ -1,7 +1,3 @@
-//
-// Created by ucloud on 12/29/24.
-//
-
 #ifndef TILED_COALESCED_MATMUL_CUH
 #define TILED_COALESCED_MATMUL_CUH
 

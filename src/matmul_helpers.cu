@@ -9,7 +9,7 @@
 
 // helper to index into the single ptr array for the 2D matrix
 // we are not using pointer-to-pointer approach as it is slower: https://stackoverflow.com/a/53978538
-__device__ __host__ int idx_in_flattened(int row, int col, int width) {
+__device__ __host__ int idx(int row, int col, int width) {
     return row * width + col;
 }
 

@@ -15,6 +15,7 @@ void run_benchmarks() {
     MatMulType types[] = {
         // Specify all the types that should be benchmarked
         MatMulType::NAIVE_GPU,
+        MatMulType::COALESCED_GPU,
         MatMulType::TILED_COALESCED_GPU,
         MatMulType::TILED_GPU,
         MatMulType::SEQUENTIAL_CPU
