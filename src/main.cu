@@ -108,6 +108,8 @@ int main(int argc, char *argv[]) {
         MatMulType type;
         if (std::string(argv[2]) == "naive_gpu") {
             type = MatMulType::NAIVE_GPU;
+        } else if (std::string(argv[2]) == "coalesced_gpu") {
+            type = MatMulType::COALESCED_GPU;
         } else if (std::string(argv[2]) == "tiled_gpu") {
             type = MatMulType::TILED_GPU;
         } else if (std::string(argv[2]) == "tiled_coalesced_gpu") {
@@ -122,7 +124,7 @@ int main(int argc, char *argv[]) {
     std::cout << "Usage:" << std::endl;
     std::cout << "  ./matmul                    - Run full benchmark suite" << std::endl;
     std::cout << "  ./matmul profile <type> <dim> - Profile specific implementation." << std::endl;
-    std::cout << "      <type>: naive_gpu, tiled_gpu" << std::endl;
+    std::cout << "      <type>: naive_gpu, coalesced_gpu, tiled_gpu, tiled_coalesced_gpu" << std::endl;
     std::cout << "      <dim>: any integer" << std::endl;
 
     return 1;

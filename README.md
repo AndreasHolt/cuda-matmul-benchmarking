@@ -3,8 +3,12 @@
 This project implements and benchmarks different approaches to matrix multiplication using CUDA:
 - Sequential CPU implementation
 - Naive GPU implementation
-- Tiled GPU implementation with shared memory
-- More implementations with further optimizations coming in the future
+- GPU implementation with memory coalescing (via thread remapping)
+- Tiled GPU implementation using shared memory
+- Tiled GPU implementation using shared memory and memory coalescing (via matrix B transposition)
+
+Future work:
+- More optimizations planned (vectorized memory access, register tiling, etc.)
 
 The implementations and results are discussed in detail in these blog posts on my personal site:
 - [Part 1: Naive GPU Implementation, Explanation, and CPU vs naive GPU Benchmarking](https://andreasholt.com/posts/gpu-vs-cpu-matmul/)
@@ -34,7 +38,7 @@ This runs benchmarks for all implementations across matrix sizes: 32×32, 256×2
 ```bash
 ./matmul profile <type> <dim>
 ```
-- `<type>`: Implementation type (`naive_gpu`, `tiled_gpu`, `tiled_coalesced_gpu`)
+- `<type>`: Implementation type (`naive_gpu`, `coalesced_gpu`, `tiled_gpu`, `tiled_coalesced_gpu`)
 - `<dim>`: Matrix dimension (creates dim×dim matrices)
 
 Example:
